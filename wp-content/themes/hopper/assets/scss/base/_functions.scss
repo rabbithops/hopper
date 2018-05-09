@@ -1,0 +1,50 @@
+/*   Base Functions
+    --------------------------------------------------------------------------  */
+
+/**
+ * Sets z-index with map value
+ */
+@function z($key) {
+    @if map-has-key($z-index, $key) {
+        @return map-get($z-index, $key);
+    }
+
+    @warn unquote('"Unknown "#{$key}" in $z-index."');
+    @return null;
+}
+
+/**
+ * Sets color with map value
+ */
+@function color($key) {
+    @if map-has-key($colors, $key) {
+        @return map-get($colors, $key);
+    }
+
+    @warn unquote('"Unknown "#{$key}" in $colors."');
+    @return null;
+}
+
+/**
+ * Sets font-family with map value
+ */
+@function family($key) {
+    @if map-has-key($fonts, $key) {
+        @return map-get($fonts, $key);
+    }
+
+    @warn unquote('"Unknown "#{$key}" in $fonts."');
+    @return null;
+}
+
+/**
+ * Sets font-weight with map value
+ */
+@function fw($key) {
+    @if map-has-key($weights, $key) {
+        @return map-get($weights, $key);
+    }
+
+    @warn unquote('"Unknown "#{$key}" in $weights."');
+    @return null;
+}

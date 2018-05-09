@@ -1,0 +1,28 @@
+/*   Base Mixins
+    --------------------------------------------------------------------------  */
+
+/**
+ * Builds media query with either a map or unit value
+ * Example: @include respond-to(small)
+ * Example: @include respond-to(599px, 'max')
+ */
+@mixin respond-to($breakpoint, $minmax: 'min') {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media screen and (#{$minmax}-width: #{map-get($breakpoints, $breakpoint)}) {
+            @content;
+        }
+    } @else {
+        @media screen and (#{$minmax}-width: em($breakpoint)) {
+            @content;
+        }
+    }
+}
+
+/**
+ * Builds min/max media query for "in between" breakpoints
+ */
+@mixin respond-between($min, $max) {
+    @media screen and (min-width: em($min)) and (max-width: em($max)) {
+        @content;
+    }
+}

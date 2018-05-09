@@ -1,0 +1,114 @@
+/*   Helper Functions
+    --------------------------------------------------------------------------  */
+
+/**
+ * Converts PX to EM
+ * @param {integer} $px   Pixel value
+ * @param {integer} $base Base font size
+ */
+
+$base-font-size: 16px;
+
+@function em($px, $base: 16px) {
+    @return ($px / $base) + unquote('em');
+}
+
+/**
+ * Custom easing
+ * https://css-tricks.com/snippets/sass/easing-map-get-function/
+ * @author Sean Dempsey
+ * @param {string} $key Name of ease
+ */
+
+$ease: (
+    in-quad:      cubic-bezier(0.550, 0.085, 0.680, 0.530),
+    in-cubic:     cubic-bezier(0.550, 0.055, 0.675, 0.190),
+    in-quart:     cubic-bezier(0.895, 0.030, 0.685, 0.220),
+    in-quint:     cubic-bezier(0.755, 0.050, 0.855, 0.060),
+    in-sine:      cubic-bezier(0.470, 0, 0.745, 0.715),
+    in-expo:      cubic-bezier(0.950, 0.050, 0.795, 0.035),
+    in-circ:      cubic-bezier(0.600, 0.040, 0.980, 0.335),
+    in-back:      cubic-bezier(0.600, -0.280, 0.735, 0.045),
+    out-quad:     cubic-bezier(0.250, 0.460, 0.450, 0.940),
+    out-cubic:    cubic-bezier(0.215, 0.610, 0.355, 1),
+    out-quart:    cubic-bezier(0.165, 0.840, 0.440, 1),
+    out-quint:    cubic-bezier(0.230, 1, 0.320, 1),
+    out-sine:     cubic-bezier(0.390, 0.575, 0.565, 1),
+    out-expo:     cubic-bezier(0.190, 1, 0.220, 1),
+    out-circ:     cubic-bezier(0.075, 0.820, 0.165, 1),
+    out-back:     cubic-bezier(0.175, 0.885, 0.320, 1.275),
+    in-out-quad:  cubic-bezier(0.455, 0.030, 0.515, 0.955),
+    in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1),
+    in-out-quart: cubic-bezier(0.770, 0, 0.175, 1),
+    in-out-quint: cubic-bezier(0.860, 0, 0.070, 1),
+    in-out-sine:  cubic-bezier(0.445, 0.050, 0.550, 0.950),
+    in-out-expo:  cubic-bezier(1, 0, 0, 1),
+    in-out-circ:  cubic-bezier(0.785, 0.135, 0.150, 0.860),
+    in-out-back:  cubic-bezier(0.680, -0.550, 0.265, 1.550)
+);
+
+@function ease($key) {
+    @if map-has-key($ease, $key) {
+        @return map-get($ease, $key);
+    }
+
+    @warn "Unkown '#{$key}' in $ease.";
+    @return null;
+}
+
+/**
+ * Asset URL Builder
+ * @access private
+ * @param {String} $type Asset type, matching folder name
+ * @param {String} $file Asset file name, including extension
+ * @return {URL} A `url()` function leading to the asset
+ */
+
+// Base path for assets (fonts, images...). Should not include trailing slash.
+$asset-base-path: './' !default;
+
+@function asset($type, $file) {
+    @return url($asset-base-path + '/' + $type + '/' + $file);
+}
+
+/**
+ * Image Asset Helper
+ * @access public
+ * @param {String} $file - Asset file name, including extension
+ * @return {URL} - A `url()` function leading to the image
+ * @require {function} asset
+ */
+
+@function image($file) {
+    @return asset('images/', $file);
+}
+
+/**
+ * Font Asset Helper
+ * @access public
+ * @param {String} $file - Asset file name, including extension
+ * @return {URL} - A `url()` function leading to the font
+ * @require {function} asset
+ */
+
+@function font($file) {
+    @return asset('fonts', $file);
+}
+
+/**
+ * Searches and replaces in a string
+ * @param {String} $string Initial string
+ * @param {String} $search Substring to replace
+ * @param {String} $replace ('') New value
+ * @return {String} Updated string
+ */
+
+@function str-replace($string, $search, $replace: '') {
+    $index: str-index($string, $search);
+
+    @if $index {
+        @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    }
+
+    @return $string;
+}

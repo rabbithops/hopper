@@ -1,0 +1,115 @@
+/*   Maps
+    --------------------------------------------------------------------------  */
+
+/**
+ * Susy layout
+ * http://susydocs.oddbird.net/en/latest/
+ *
+ * This map only needed if planning to change the global defaults
+ */
+$susy: (
+    container: 940px,
+    columns: 12,
+    gutters: 0.5,
+    clearfix: true
+);
+
+@include layout($susy);
+
+/**
+ * Breakpoints
+ */
+
+/*SCSS_BREAKPOINT_VARS*/
+$xsmall: em(400px);
+$small: em(600px);
+$medium: em(800px);
+$large: em(1000px);
+$navigation: em(1000px);
+$xlarge: em(1200px);
+/*END_SCSS_BREAKPOINT_VARS*/
+
+$breakpoints: (
+/*SCSS_BREAKPOINT_MAP*/
+xsmall: $xsmall,
+small: $small,
+medium: $medium,
+large: $large,
+navigation: $navigation,
+xlarge: $xlarge,
+/*END_SCSS_BREAKPOINT_MAP*/
+);
+
+/**
+ * Z-indieces
+ */
+
+$z-index: (
+    mount-everest: 99999,
+    overlay-content: 80,
+    overlay: 70,
+    main-menu-sub: 60,
+    header-nav: 60,
+    header: 50,
+    block-content-floating: 40,
+    block-content: 30,
+    block: 20,
+    body: 10,
+    botomless-pit: -99999,
+);
+
+/**
+ * Colors
+ */
+
+//scss-lint:disable ColorVariable
+$orange: #f05327;
+$light-purple: #997b9d;
+$dark-purple: #543c4a;
+
+$colors: (
+    body-bg: #fff,
+    body-color: #2c313b,
+    a-color: #000,
+    a-hover: $light-purple,
+    cta-primary: $orange,
+    cta-primary-hover: $orange,
+    cta-secondary: #8f00c2,
+    cta-secondary-hover: #c144f2,
+    hr-border: #ccc,
+    selection-bg: #00aaec,
+    selection-color: #fff,
+    validation-color: #d9534f,
+    fileupload-border: #ddd,
+    fileupload-color: #aaa,
+    input-border: #ccc,
+    table-row-bg: rgba(0, 0, 0, 0.1),
+    table-border: rgba(0, 0, 0, 0.1),
+    gallery-caption-bg: rgba(0, 0, 0, 0.7),
+    gallery-caption-color: #fff,
+
+
+);
+
+/**
+ * Fonts
+ */
+
+$base-stack: 'Nunito Sans', sans-serif;
+$display-stack: 'Playfair Display', serif;
+$mono-stack: 'Andale Mono', 'Courier New', monospace;
+
+$fonts: (
+    base: $base-stack,
+    display: $display-stack,
+    mono: $mono-stack
+);
+
+$weights: (
+    thin: 100,
+    light: 300,
+    normal: 400,
+    medium: 600,
+    bold: 700,
+    heavy: 900
+);
