@@ -1,46 +1,95 @@
 <?php
-if (!empty($_SERVER['SCRIPT_FILENAME']) && 'comments.php' == basename($_SERVER['SCRIPT_FILENAME']))
-	die ('Please do not load this page directly. Thanks!');
+/**
+ * The template for displaying comments
+ *
+ * This is the template that displays the area of the page that contains both the current comments
+ * and the comment form.
+ *
+ * @Date:   2019-10-15 12:30:02
+ * @Last Modified by:   Timi Wahalahti
+ * @Last Modified time: 2021-01-12 17:30:20
+ *
+ * @package Hopper
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ */
 
-if (post_password_required()) {
-    return;
+namespace Hopper;
+
+ /*
+ * If the current post is protected by a password and
+ * the visitor has not yet entered the password we will
+ * return early without loading the comments.
+ */
+if ( post_password_required() ) {
+	return;
 } ?>
 
-<div id="comments" class="comments">
+<div id="comments" class="comments-area">
 
-    <?php if (have_comments()) : ?>
+  <?php // You can start editing here -- including this comment!
+  if ( have_comments() ) : ?>
+    <h2 class="comments-title">
+      <?php $comment_count = get_comments_number();
+      if ( '1' === $comment_count ) {
+        printf(
+          /* translators: 1: title. */
+          esc_html__( 'One thought on &ldquo;%1$s&rdquo;', 'hopper' ),
+          '<span>' . wp_kses_post( get_the_title() ) . '</span>'
+        );
+      } else {
+        printf(
+          /* translators: 1: comment count number, 2: title. */
+          esc_html( _nx( '%1$s comment %2$s', '%1$s comments %2$s', $comment_count, 'comments title', 'hopper' ) ),
+          esc_html( number_format_i18n( $comment_count ) ),
+          '<span class="screen-reader-text">on &ldquo;' . wp_kses_post( get_the_title() ) . '&rdquo;</span>'
+        );
+      }
+      ?>
+    </h2>
 
-    	<h3 class="comments-count"><?php comments_number('<span>No</span> responses', '<span>One</span> response', _n('<span>%</span> response', '<span>%</span> responses', get_comments_number()));?> to “<?php the_title(); ?>”</h3>
+    <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
+      <nav id="comment-nav-above" class="navigation comment-navigation" role="navigation">
+        <h2 class="screen-reader-text"><?php esc_html_e( 'Comment navigation', 'hopper' ); ?></h2>
+        <div class="nav-links">
 
-    	<?php if (get_comment_pages_count() > 1 && get_option('page_comments')) { ?>
-    	<nav id="comments-nav-above" class="comments-nav">
-    		<h4 class="screen-reader-text">Comment Navigation</h4>
-    		<div class="comments-nav-prev"><?php previous_comments_link('&larr; Older Comments'); ?></div>
-    		<div class="comments-nav-next"><?php next_comments_link('Newer Comments &rarr;'); ?></div>
-    	</nav>
-    	<?php } ?>
+          <div class="nav-previous"><?php previous_comments_link( esc_html__( 'Older Comments', 'hopper' ) ); ?></div>
+          <div class="nav-next"><?php next_comments_link( esc_html__( 'Newer Comments', 'hopper' ) ); ?></div>
 
-    	<ol class="comments-list">
-    		<?php wp_list_comments(array(
-                'walker'      => new Hopper_Comment_Walker,
-                'type'        => 'comment'
-            )); ?>
-    	</ol>
+        </div><!-- .nav-links -->
+      </nav><!-- #comment-nav-above -->
+    <?php endif; // Check for comment navigation. ?>
 
-    	<?php if (get_comment_pages_count() > 1 && get_option('page_comments')) { ?>
-    	<nav id="comments-nav-below" class="comments-nav">
-    		<h4 class="screen-reader-text">Comment Navigation</h4>
-    		<div class="comments-nav-prev"><?php previous_comments_link( '&larr; Older Comments' ); ?></div>
-    		<div class="comments-nav-next"><?php next_comments_link( 'Newer Comments &rarr;' ); ?></div>
-    	</nav>
-    	<?php } ?>
+    <ol class="comment-list">
+      <?php
+        wp_list_comments( array(
+          'style'      => 'ol',
+          'short_ping' => true,
+          'callback'   => __NAMESPACE__ . '\single_comment',
+        ) );
+      ?>
+    </ol><!-- .comment-list -->
 
-    <?php elseif (!comments_open() && !is_page() && post_type_supports(get_post_type(), 'comments')) : ?>
+    <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
+      <nav id="comment-nav-below" class="navigation comment-navigation" role="navigation">
+        <h2 class="screen-reader-text"><?php esc_html_e( 'Comment navigation', 'hopper' ); ?></h2>
+        <div class="nav-links">
 
-    	<p class="comments-closed">Comments are closed.</p>
+          <div class="nav-previous"><?php previous_comments_link( esc_html__( 'Older Comments', 'hopper' ) ); ?></div>
+          <div class="nav-next"><?php next_comments_link( esc_html__( 'Newer Comments', 'hopper' ) ); ?></div>
 
-    <?php endif; ?>
+        </div><!-- .nav-links -->
+      </nav><!-- #comment-nav-below -->
+    <?php endif; // Check for comment navigation.
 
-    <?php comment_form(); ?>
+  endif; // Check for have_comments().
 
-</div>
+
+  // If comments are closed and there are comments, let's leave a little note, shall we?
+  if ( ! comments_open() && get_comments_number() && post_type_supports( get_post_type(), 'comments' ) ) : ?>
+    <p class="no-comments"><?php esc_html_e( 'Comments are closed.', 'hopper' ); ?></p>
+  <?php endif;
+
+  comment_form();
+  ?>
+
+</div><!-- #comments -->

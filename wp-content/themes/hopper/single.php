@@ -1,19 +1,48 @@
-<?php get_header(); ?>
+<?php
+/**
+ * The template for displaying all single posts
+ *
+ * @Date:   2019-10-15 12:30:02
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2022-09-07 11:57:39
+ *
+ * @package Hopper
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
+ */
 
-    <?php if (!post_password_required()): ?>
+namespace Hopper;
 
-        <?php if (have_posts()): while (have_posts()): the_post(); ?>
+the_post();
+get_header(); ?>
 
-            <?php get_template_part('parts/content', get_post_type()); ?>
+<main class="site-main">
 
-            <?php comments_template('', true); ?>
+  <section class="block block-single">
+    <article class="article-content">
 
-        <?php endwhile; endif; ?>
+      <h1><?php the_title(); ?></h1>
 
-    <?php else: // post_password_required() ?>
+      <?php the_content();
 
-        <?php get_template_part('parts/content-protected'); ?>
+      // Required by WordPress Theme Check, feel free to remove as it's rarely used in starter themes
+      wp_link_pages( array( 'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'hopper' ), 'after' => '</div>' ) );
 
-    <?php endif; // !post_password_required() ?>
+      entry_footer();
 
-<?php get_footer(); ?>
+      if ( get_edit_post_link() ) {
+        edit_post_link( sprintf( wp_kses( __( 'Edit <span class="screen-reader-text">%s</span>', 'hopper' ), [ 'span' => [ 'class' => [] ] ] ), get_the_title() ), '<p class="edit-link">', '</p>' );
+      }
+
+      the_post_navigation();
+
+  		// If comments are open or we have at least one comment, load up the comment template.
+      if ( comments_open() || get_comments_number() ) {
+        comments_template();
+      } ?>
+
+    </article>
+  </section>
+
+</main>
+
+<?php get_footer();

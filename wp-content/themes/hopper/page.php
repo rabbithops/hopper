@@ -1,41 +1,31 @@
-<?php get_header(); ?>
+<?php
+/**
+ * The template for displaying all pages
+ *
+ * This is the template that displays all pages by default.
+ * Please note that this is the WordPress construct of pages
+ * and that other 'pages' on your WordPress site may use a
+ * different template.
+ *
+ * @Date:   2019-10-15 12:30:02
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2022-02-08 17:03:18
+ *
+ * @package Hopper
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ */
 
-    <?php if (!post_password_required()): ?>
+namespace Hopper;
 
-        <?php if (have_posts()): ?>
+the_post();
 
-            <?php while (have_posts()): the_post(); ?>
+get_header(); ?>
 
-                <?php if (have_rows('layouts')): ?>
-                    <div class="core container">
-                        <header class="entry-header" role="banner">
-                            <h1><?php the_title(); ?></h1>
-                        </header>
+<main class="site-main">
+  <?php
+    the_content();
+    air_edit_link();
+  ?>
+</main>
 
-                    	<?php the_content(); ?>
-                     </div>
-                    <?php while (have_rows('layouts')): the_row(); ?>
-
-                        <?php
-                        $layout = get_row_layout();
-                        get_template_part("layouts/{$layout}"); ?>
-
-                    <?php endwhile; ?>
-
-                <?php else: ?>
-
-                    <?php get_template_part('parts/content', get_post_type()); ?>
-
-                <?php endif; ?>
-
-            <?php endwhile; ?>
-
-        <?php endif; ?>
-
-    <?php else: // post_password_required() ?>
-
-        <?php get_template_part('parts/content-protected'); ?>
-
-    <?php endif; // !post_password_required() ?>
-
-<?php get_footer(); ?>
+<?php get_footer();

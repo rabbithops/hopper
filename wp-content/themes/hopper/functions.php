@@ -1,95 +1,206 @@
 <?php
+/**
+ * Gather all bits and pieces together.
+ * If you end up having multiple post types, taxonomies,
+ * hooks and functions - please split those to their
+ * own files under /inc and just require here.
+ *
+ * @Date: 2019-10-15 12:30:02
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2023-03-21 16:01:34
+ *
+ * @package Hopper
+ */
 
-// Administration functions
-require get_template_directory() . '/includes/admin.php';
-
-// Security functions
-require get_template_directory() . '/includes/security.php';
-
-// jQuery Handler
-require get_template_directory() . '/includes/jquery.php';
-
-// Styles and scripts enqueuer
-require get_template_directory() . '/includes/enqueuer.php';
-
-// TinyMCE customization
-require get_template_directory() . '/includes/tinymce.php';
-
-// Gravity Forms customization
-require get_template_directory() . '/includes/gravity-forms.php';
-
-// Custom walkers
-require get_template_directory() . '/includes/walker-breadcrumb-nav.php';
-require get_template_directory() . '/includes/walker-comments.php';
-require get_template_directory() . '/includes/walker-main-nav.php';
+namespace Hopper;
 
 /**
- * Sets theme defaults and features
+ * The current version of the theme.
  */
-function hopper_theme_setup() {
+define( 'AIR_LIGHT_VERSION', '9.3.2' );
 
-    // Enable featured image support
-    // Add more post types to the array if needed.
-    add_theme_support('post-thumbnails', array('post'));
+// We need to have some defaults as comments or empties so let's allow this:
+// phpcs:disable Squiz.Commenting.InlineComment.SpacingBefore, WordPress.Arrays.ArrayDeclarationSpacing.SpaceInEmptyArray
 
-    // Customize maximum oembed width
-    if (!isset($content_width)) {
-        $content_width = 800;
-    }
-
-    // Load main stylesheet in TinyMCE
-    add_editor_style(array(
-        'https://fonts.googleapis.com/css?family=Open+Sans', // You must encode the special characters in Google Font URLs!
-        'assets/css/main.css'
-    ));
+/**
+ * Theme settings
+ */
+add_action( 'after_setup_theme', function() {
+  $theme_settings = [
+    /**
+     * Theme textdomain
+     */
+    'textdomain' => 'hopper',
 
     /**
-    * Theme navigation menu locations
-    */
-    register_nav_menus(array(
-        'main_nav' => 'Main Navigation',
-        'footer_nav' => 'Footer Navigation'
-    ));
+     * Image and content sizes
+     */
+    'image_sizes' => [
+      'small'   => 300,
+      'medium'  => 700,
+      'large'   => 1200,
+    ],
+    'content_width' => 800,
 
-}
-add_action('after_setup_theme', 'hopper_theme_setup');
+    /**
+     * Logo and featured image
+     */
+    'default_featured_image'  => null,
+    'logo'                    => '/svg/logo.svg',
+
+    /**
+     * Custom setting group settings when using Air setting groups plugin.
+     * On multilingual sites using Polylang, translations are handled automatically.
+     */
+    'custom_settings' => [
+      // 'your-custom-setting' => [
+      //   'id' => Your custom setting post id,
+      //   'title' => 'Your custom setting',
+      //   'block-editor' => true,
+      //  ],
+    ],
+
+    'social_media_accounts'  => [
+      // 'twitter' => [
+      //   'title' => 'Twitter',
+      //   'url'   => 'https://twitter.com/digitoimistodude',
+      // ],
+    ],
+
+    /**
+     * All links are cheked with JS, if those direct to external site and if,
+     * indicator of that is included. Exclude domains from that check in this array.
+     */
+    'external_link_domains_exclude' => [
+      'localhost:3000',
+      'airdev.test',
+      'airwptheme.com',
+      'localhost',
+    ],
+
+    /**
+     * Menu locations
+     */
+    'menu_locations' => [
+      'primary' => __( 'Primary Menu', 'hopper' ),
+    ],
+
+    /**
+     * Taxonomies
+     *
+     * See the instructions:
+     * https://github.com/digitoimistodude/hopper#custom-taxonomies
+     */
+    'taxonomies' => [
+      // 'Your_Taxonomy' => [ 'post', 'page' ],
+    ],
+
+    /**
+     * Post types
+     *
+     * See the instructions:
+     * https://github.com/digitoimistodude/hopper#custom-post-types
+     */
+    'post_types' => [
+      // 'Your_Post_Type',
+    ],
+
+    /**
+     * Gutenberg -related settings
+     */
+    // Register custom ACF Blocks
+    'acf_blocks' => [
+      // [
+      //   'name'           => 'block-file-slug',
+      //   'title'          => 'Block Visible Name',
+      //   // You can safely remove lines below if you find no use for them
+      //   'prevent_cache'  => false, // Defaults to false,
+      //   // Icon defaults to svg file inside svg/block-icons named after the block name,
+      //   // eg. svg/block-icons/block-file-slug.svg
+      //   //
+      //   // Icon setting defines the dashicon equivalent: https://developer.wordpress.org/resource/dashicons/#block-default
+      //   // 'icon'  => 'block-default',
+      // ],
+    ],
+
+    // Custom ACF block default settings
+    'acf_block_defaults' => [
+      'category'          => 'hopper',
+      'mode'              => 'auto',
+      'align'             => 'full',
+      'post_types'        => [
+        'page',
+      ],
+      'supports'  => [
+        'align'           => false,
+        'anchor'          => true,
+        'customClassName' => false,
+      ],
+      'render_callback'   => __NAMESPACE__ . '\render_acf_block',
+    ],
+
+    // Restrict to only selected blocks
+    // Set the value to 'all' to allow all blocks everywhere
+   'allowed_blocks' => [
+      'default' => [
+      ],
+      'post' => [
+        'core/archives',
+        'core/audio',
+        'core/buttons',
+        'core/categories',
+        'core/code',
+        'core/column',
+        'core/columns',
+        'core/coverImage',
+        'core/embed',
+        'core/file',
+        'core/freeform',
+        'core/gallery',
+        'core/heading',
+        'core/html',
+        'core/image',
+        'core/latestComments',
+        'core/latestPosts',
+        'core/list',
+        'core/list-item',
+        'core/more',
+        'core/nextpage',
+        'core/paragraph',
+        'core/preformatted',
+        'core/pullquote',
+        'core/quote',
+        'core/block',
+        'core/separator',
+        'core/shortcode',
+        'core/spacer',
+        'core/subhead',
+        'core/table',
+        'core/textColumns',
+        'core/verse',
+        'core/video',
+      ],
+    ],
+
+    // If you want to use classic editor somewhere, define it here
+    'use_classic_editor' => [],
+
+    // Add your own settings and use them wherever you need, for example THEME_SETTINGS['my_custom_setting']
+    'my_custom_setting' => true,
+  ];
+
+  $theme_settings = apply_filters( 'air_light_theme_settings', $theme_settings );
+
+  define( 'THEME_SETTINGS', $theme_settings );
+} ); // end action after_setup_theme
 
 /**
- * Add custom image sizes
+ * Required files
  */
-// add_image_size('maximum_size', 1000, 1000, true);
+require get_theme_file_path( '/inc/hooks.php' );
+require get_theme_file_path( '/inc/includes.php' );
+require get_theme_file_path( '/inc/template-tags.php' );
 
-/**
- * Add custom image sizes to media selector
- */
-function hopper_custom_image_sizes($sizes) {
-    $custom_sizes = array(
-        'maximum_size' => 'Maximum Size',
-    );
-    $all_sizes = array_merge($sizes, $custom_sizes);
-    return $all_sizes;
-}
-// add_filter('image_size_names_choose', 'hopper_custom_image_sizes');
-
-/**
- * Use custom template for get_search_form()
- */
-function hopper_get_search_form() {
-    $form = '';
-    locate_template('/parts/search-form.php', true, false);
-    return $form;
-}
-
-add_filter('get_search_form', 'hopper_get_search_form');
-
-function admin_login($user, $username, $password) {
-    $user = get_user_by("login", $username);
-
-    if($user != "FALSE") {
-        wp_set_auth_cookie($user->ID);
-    }
-    else {
-        return null;
-    }
-    return $user;
-}
+// Run theme setup
+add_action( 'init', __NAMESPACE__ . '\theme_setup' );
+add_action( 'after_setup_theme', __NAMESPACE__ . '\build_theme_support' );

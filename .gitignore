@@ -1,89 +1,9 @@
-# WordPress
-/license.txt
-/readme.html
-wp-config.php
-wp-config-sample.php
-wp-content/*
-!wp-content/plugins/
-
-# WordPress Themes
-!wp-content/themes/
-wp-content/themes/*
-
-# Exclude our project's theme
-!wp-content/themes/hopper/
-
-# WordPress MU Plugins
-!wp-content/mu-plugins/
-wp-content/mu-plugins/*
-!wp-content/mu-plugins/acf-field-type-grunticon/
-!wp-content/mu-plugins/acf-grunticon.php
-!wp-content/mu-plugins/hopper-core/
-!wp-content/mu-plugins/hopper-core.php
-!wp-content/mu-plugins/hopper-mustache/
-!wp-content/mu-plugins/hopper-mustache.php
-!wp-content/mu-plugins/wp-password-bcrypt.php
-
-# System & Development
-.vscode
-node_modules
-.sass-cache
-robots.txt
-sitemap.xml
-sitemap.xml.gz
-/google*.html
-/.htaccess
-/.htaccess.orig
+gulp/tasks/.DS_Store
+node_modules/
+bower_components/
+package-lock.json
 .DS_Store
-.gitattributes
-.ftpquota
-.well-known
-Thumbs.db
-error_log
-maintenance.php
-maintenance.html
-._*
-*.bak
-*.ini
-*.log
-*.map
-*.orig
-*~
+gulp/.DS_Store
 
-# Large/disallowed file types
-*.3gp
-*.3gpp
-*.asf
-*.asx
-*.avi
-*.bin
-*.deb
-*.dll
-*.dmg
-*.exe
-*.flv
-*.gz
-*.hqx
-*.img
-*.iso
-*.kar
-*.m4a
-*.m4v
-*.mid
-*.midi
-*.mng
-*.mov
-*.mp3
-*.mp4
-*.mpeg
-*.mpg
-*.msi
-*.msm
-*.msp
-*.ogg
-*.ogv
-*.ra
-*.tar
-*.webm
-*.wmv
-*.zip
+# Tests
+content
